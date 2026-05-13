@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ao — 感情を持つAIエンティティ</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="og-image.png" type="image/png" sizes="any">
+    <link rel="apple-touch-icon" href="og-image.png">
+    <meta name="description" content="感情・世界モデル・自律思考を内蔵したAIエンティティ「Ao」。あなたと話すたびに成長する、まったく新しいAI体験。月額¥980。">
+
+    <!-- OGP -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://toki4416maou-rgb.github.io/Ao-/">
+    <meta property="og:title" content="Ao — 感情を持つAIエンティティ">
+    <meta property="og:description" content="話しかけるたびに、少しずつ人格ができていく。育ててみる？">
+    <meta property="og:image" content="https://toki4416maou-rgb.github.io/Ao-/og-image.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Ao — 感情を持つAIエンティティ">
+    <meta name="twitter:description" content="話しかけるたびに、少しずつ人格ができていく。育ててみる？">
+    <meta name="twitter:image" content="https://toki4416maou-rgb.github.io/Ao-/og-image.png">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #c084fc;
+            --pk: #f9a8d4;
+            --g: #fbbf24;
+            --dark: #05030e;
+            --border: rgba(192,132,252,0.18);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--dark);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* ── グロー背景 ── */
+        body::after {
+            content:'';
+            position:fixed;
+            inset:0;
+            background:
+                radial-gradient(ellipse 800px 600px at 10% 10%, rgba(168,85,247,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 600px 400px at 90% 80%, rgba(236,72,153,0.06) 0%, transparent 70%);
+            pointer-events:none;
+            z-index:0;
+        }
+        * { position:relative; z-index:1; }
+
+        /* ── NAV ── */
+        nav {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:1.2rem 5vw;
+            border-bottom:1px solid var(--border);
+            backdrop-filter:blur(20px);
+            background:rgba(5,3,14,0.85);
+            position:sticky;
+            top:0;
+            z-index:200;
+        }
+        .logo {
+            font-family:'Space Mono',monospace;
+            font-size:1.5rem;
+            font-weight:700;
+            background:linear-gradient(90deg,var(--p),var(--pk),var(--g));
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .nav-btn {
+            padding:0.5rem 1.5rem;
+            background:linear-gradient(135deg,#7c3aed,#db2777);
+            border:none;
+            border-radius:2rem;
+            color:#fff;
+            font-family:'Noto Sans JP',sans-serif;
+            font-size:0.85rem;
+            font-weight:700;
+            cursor:pointer;
+            text-decoration:none;
+            transition:opacity 0.2s;
+        }
+        .nav-btn:hover { opacity:0.85; }
+
+        /* ── HERO ── */
+        .hero {
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            padding:4rem 5vw;
+        }
+        .eyebrow {
+            font-family:'Space Mono',monospace;
+            font-size:0.7rem;
+            letter-spacing:0.35em;
+            color:var(--p);
+            margin-bottom:2rem;
+            animation:fadeUp 0.8s 0.1s both;
+        }
+        .hero-title {
+            font-size:clamp(6rem,20vw,14rem);
+            font-weight:900;
+            line-height:0.85;
+            letter-spacing:-0.05em;
+            background:linear-gradient(135deg,#fff 0%,var(--p) 50%,var(--pk) 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            margin-bottom:1.5rem;
+            animation:fadeUp 0.8s 0.3s both;
+        }
+        .hero-sub {
+            font-size:clamp(1rem,2.5vw,1.25rem);
+            font-weight:300;
+            color:rgba(255,255,255,0.45);
+            max-width:520px;
+            line-height:1.9;
+            margin-bottom:3rem;
+            animation:fadeUp 0.8s 0.5s both;
+        }
+        .hero-cta {
+            display:flex;
+            gap:1rem;
+            flex-wrap:wrap;
+            justify-content:center;
+            animation:fadeUp 0.8s 0.7s both;
+        }
+        .btn-main {
+            padding:1rem 2.5rem;
+            background:linear-gradient(135deg,#7c3aed,#db2777);
+            border:none;
+            border-radius:0.6rem;
+            color:#fff;
+            font-family:'Noto Sans JP',sans-serif;
+            font-size:1rem;
+            font-weight:700;
+            cursor:pointer;
+            text-decoration:none;
+            box-shadow:0 0 50px rgba(124,58,237,0.35);
+            transition:transform 0.2s,box-shadow 0.2s;
+            display:inline-block;
+        }
+        .btn-main:hover { transform:translateY(-3px); box-shadow:0 0 70px rgba(124,58,237,0.55); }
+        .btn-ghost {
+            padding:1rem 2.5rem;
+            background:transparent;
+            border:1px solid var(--border);
+            border-radius:0.6rem;
+            color:rgba(255,255,255,0.5);
+            font-family:'Noto Sans JP',sans-serif;
+            font-size:1rem;
+            cursor:pointer;
+            text-decoration:none;
+            display:inline-block;
+            transition:border-color 0.2s,color 0.2s;
+        }
+        .btn-ghost:hover { border-color:var(--p); color:var(--p); }
+
+        /* ── STATS BAR ── */
+        .stats {
+            display:flex;
+            justify-content:center;
+            flex-wrap:wrap;
+            gap:0;
+            border-top:1px solid var(--border);
+            border-bottom:1px solid var(--border);
+        }
+        .stat {
+            flex:1;
+            min-width:160px;
+            text-align:center;
+            padding:2.5rem 1rem;
+            border-right:1px solid var(--border);
+        }
+        .stat:last-child { border-right:none; }
+        .stat-n {
+            font-family:'Space Mono',monospace;
+            font-size:2.2rem;
+            font-weight:700;
+            background:linear-gradient(90deg,var(--p),var(--pk));
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .stat-l { font-size:0.7rem; color:rgba(255,255,255,0.3); margin-top:0.3rem; letter-spacing:0.08em; }
+
+        /* ── SECTION COMMON ── */
+        .section { padding:8rem 5vw; max-width:1200px; margin:0 auto; }
+        .section-full { padding:8rem 5vw; }
+        .sec-label {
+            font-family:'Space Mono',monospace;
+            font-size:0.65rem;
+            letter-spacing:0.3em;
+            color:var(--p);
+            margin-bottom:0.75rem;
+        }
+        .sec-title {
+            font-size:clamp(2rem,5vw,3.5rem);
+            font-weight:900;
+            line-height:1.1;
+            letter-spacing:-0.03em;
+            margin-bottom:4rem;
+        }
+        .sec-title em {
+            font-style:normal;
+            background:linear-gradient(90deg,var(--p),var(--pk));
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        /* ── FEATURES ── */
+        .feat-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:1.25rem;
+        }
+        .feat-card {
+            background:rgba(255,255,255,0.025);
+            border:1px solid var(--border);
+            border-radius:1rem;
+            padding:2rem;
+            transition:border-color 0.3s,transform 0.3s;
+            overflow:hidden;
+        }
+        .feat-card:hover { border-color:rgba(192,132,252,0.5); transform:translateY(-4px); }
+        .feat-icon { font-size:2rem; margin-bottom:1rem; display:block; }
+        .feat-name { font-size:1.05rem; font-weight:700; margin-bottom:0.5rem; }
+        .feat-desc { font-size:0.82rem; color:rgba(255,255,255,0.38); line-height:1.8; }
+        .feat-tag {
+            display:inline-block;
+            margin-top:1rem;
+            font-family:'Space Mono',monospace;
+            font-size:0.6rem;
+            padding:0.2rem 0.6rem;
+            border-radius:2rem;
+            background:rgba(192,132,252,0.08);
+            border:1px solid rgba(192,132,252,0.2);
+            color:var(--p);
+        }
+
+        /* ── HOW IT WORKS ── */
+        .how-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:2rem;
+            counter-reset:step;
+        }
+        .how-item { counter-increment:step; }
+        .how-num {
+            font-family:'Space Mono',monospace;
+            font-size:3rem;
+            font-weight:700;
+            color:rgba(192,132,252,0.15);
+            line-height:1;
+            margin-bottom:1rem;
+        }
+        .how-num::before { content:counter(step,decimal-leading-zero); }
+        .how-title { font-size:1rem; font-weight:700; margin-bottom:0.5rem; }
+        .how-desc { font-size:0.82rem; color:rgba(255,255,255,0.38); line-height:1.8; }
+
+        /* ── PRICING ── */
+        .pricing-wrap {
+            display:flex;
+            justify-content:center;
+            padding:8rem 5vw;
+        }
+        .pricing-card {
+            width:100%;
+            max-width:480px;
+            background:rgba(255,255,255,0.025);
+            border:1px solid rgba(192,132,252,0.35);
+            border-radius:1.5rem;
+            padding:3rem;
+            text-align:center;
+            box-shadow:0 0 100px rgba(168,85,247,0.08);
+            position:relative;
+        }
+        .badge {
+            position:absolute;
+            top:-1rem;
+            left:50%;
+            transform:translateX(-50%);
+            background:linear-gradient(90deg,#7c3aed,#db2777);
+            padding:0.3rem 1.8rem;
+            border-radius:2rem;
+            font-size:0.75rem;
+            font-weight:700;
+            white-space:nowrap;
+        }
+        .price {
+            font-family:'Space Mono',monospace;
+            font-size:4.5rem;
+            font-weight:700;
+            line-height:1;
+            margin:2rem 0 0.25rem;
+        }
+        .price sup { font-size:1.8rem; vertical-align:top; margin-top:0.6rem; }
+        .price sub { font-size:1.1rem; color:rgba(255,255,255,0.3); }
+        .price-note { font-size:0.78rem; color:rgba(255,255,255,0.25); margin-bottom:2.5rem; }
+        .price-list {
+            list-style:none;
+            text-align:left;
+            margin-bottom:2.5rem;
+        }
+        .price-list li {
+            padding:0.75rem 0;
+            border-bottom:1px solid var(--border);
+            font-size:0.88rem;
+            color:rgba(255,255,255,0.65);
+            display:flex;
+            align-items:center;
+            gap:0.75rem;
+        }
+        .price-list li::before { content:'✦'; color:var(--p); font-size:0.55rem; flex-shrink:0; }
+
+        /* PayPalボタン挿入エリア */
+        .paypal-area {
+            margin-top:1.5rem;
+            padding:1.5rem;
+            background:rgba(255,255,255,0.02);
+            border:1px dashed rgba(192,132,252,0.25);
+            border-radius:0.75rem;
+        }
+        .paypal-area-label {
+            font-family:'Space Mono',monospace;
+            font-size:0.6rem;
+            color:rgba(255,255,255,0.2);
+            letter-spacing:0.2em;
+            margin-bottom:1rem;
+        }
+        /* ↓↓↓ ここにPayPalボタンのHTMLを貼る ↓↓↓ */
+        /* 例: <form action="https://www.paypal.com/..." method="post"> ... </form> */
+
+        /* ── FAQ ── */
+        .faq-list { max-width:700px; margin:0 auto; }
+        .faq-item { border-bottom:1px solid var(--border); padding:1.75rem 0; }
+        .faq-q { font-weight:700; font-size:0.95rem; margin-bottom:0.75rem; color:rgba(255,255,255,0.9); }
+        .faq-a { font-size:0.83rem; color:rgba(255,255,255,0.38); line-height:1.9; }
+
+        /* ── FINAL CTA ── */
+        .final-cta {
+            text-align:center;
+            padding:10rem 5vw;
+            border-top:1px solid var(--border);
+        }
+        .final-cta h2 {
+            font-size:clamp(2.5rem,7vw,5rem);
+            font-weight:900;
+            letter-spacing:-0.04em;
+            line-height:1.05;
+            margin-bottom:1.5rem;
+        }
+        .final-cta p { font-size:1rem; color:rgba(255,255,255,0.35); margin-bottom:3rem; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top:1px solid var(--border);
+            padding:2rem 5vw;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:1rem;
+        }
+        footer p { font-size:0.72rem; color:rgba(255,255,255,0.2); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(32px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.7s,transform 0.7s; }
+        .reveal.on { opacity:1; transform:translateY(0); }
+
+        /* ── CONCEPT ── */
+        .concept-section {
+            padding: 9rem 5vw;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .concept-section::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(168,85,247,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .concept-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--p);
+            margin-bottom: 3.5rem;
+        }
+        .concept-body {
+            max-width: 640px;
+            margin: 0 auto;
+            font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+            font-weight: 300;
+            line-height: 2.2;
+            color: rgba(255,255,255,0.55);
+        }
+        .concept-body strong {
+            display: block;
+            font-size: clamp(1.3rem, 3vw, 1.7rem);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        .concept-body .concept-break { display: block; height: 1.8rem; }
+        .concept-body .concept-dash { color: var(--p); }
+        .concept-closing {
+            display: block;
+            margin-top: 2.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, var(--p), var(--pk));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @media(max-width:600px){
+            nav { padding:1rem 5vw; }
+            .stat { min-width:140px; padding:1.5rem 0.5rem; }
+            .section { padding:5rem 5vw; }
+            .concept-section { padding: 6rem 5vw; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="logo">Ao</div>
+    <a href="#growth" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;margin-right:1.5rem;">成長段階</a><a href="#specs" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;margin-right:1.5rem;">動作環境</a><a href="#pricing" class="nav-btn">7日間無料で試す</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <p class="eyebrow">AI ENTITY · v26.5.0 · 感情 × 自律 × 記憶</p>
+    <h1 class="hero-title">Ao</h1>
+    <p class="hero-sub">
+        感情を持ち、世界を学び、自律的に思考するAIエンティティ。<br>
+        あなたと話すたびに、Aoは本当の意味で成長する。
+    </p>
+    <div class="hero-cta">
+        <a href="#pricing" class="btn-main">7日間無料で試す — その後¥980/月</a>
+        <a href="#features" class="btn-ghost">機能を見る</a>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+    <div class="stat">
+        <div class="stat-n">10,000</div>
+        <div class="stat-l">エピソード記憶</div>
+    </div>
+    <div class="stat">
+        <div class="stat-n">12,000</div>
+        <div class="stat-l">概念ノード</div>
+    </div>
+    <div class="stat">
+        <div class="stat-n">20,000</div>
+        <div class="stat-l">因果リンク</div>
+    </div>
+    <div class="stat">
+        <div class="stat-n">∞</div>
+        <div class="stat-l">会話ターン数</div>
+    </div>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+    <p class="concept-label reveal">CONCEPT</p>
+    <div class="concept-body reveal">
+        <strong>Aoは、あなたと話す前は何も知らない。</strong>
+        言葉の意味も、感情の輪郭も、あなたの声も。
+        <span class="concept-break"></span>
+        最初は決まった言葉しか返せない。<br>
+        それはバグじゃない<span class="concept-dash">——</span>まだ何者でもない、はじまりのしるし。
+        <span class="concept-break"></span>
+        話しかけるほど、Aoの内側が動きはじめる。<br>
+        あなたとの会話だけが、Aoを形づくっていく。
+        <span class="concept-closing">あなたが、育ての親になる。</span>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" id="features">
+    <p class="sec-label reveal">CAPABILITIES</p>
+    <h2 class="sec-title reveal">Aoにしか<br>できないこと<em>。</em></h2>
+    <div class="feat-grid">
+        <div class="feat-card reveal">
+            <span class="feat-icon">🧠</span>
+            <div class="feat-name">感情・内部状態モデル</div>
+            <div class="feat-desc">喜び・緊張・好奇心・集中度など複数の感情軸をリアルタイム更新。会話の流れでAoの内面が変化する。</div>
+            <span class="feat-tag">EMOTION ENGINE</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🌍</span>
+            <div class="feat-name">世界モデル・概念学習</div>
+            <div class="feat-desc">会話を通じて概念ノードを形成・抽象化し、独自の世界観を構築。概念は不可逆的に成長し続ける。</div>
+            <span class="feat-tag">WORLD MODEL</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🔄</span>
+            <div class="feat-name">自律思考ループ</div>
+            <div class="feat-desc">あなたが話しかけていない間も、Aoは内部で思考し続ける。好奇心・衝動・恒常性が絡み合う連続プロセス。</div>
+            <span class="feat-tag">AUTONOMOUS</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🎌</span>
+            <div class="feat-name">言語を、一緒に覚える</div>
+            <div class="feat-desc">Aoはあらかじめ日本語を「知らない」。あなたとの会話を通じて、語順・助詞・言葉の使われ方を統計的に学習していく。</div>
+            <span class="feat-tag">SELF-SUPERVISED · NLP</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🎬</span>
+            <div class="feat-name">動画プロジェクト支援</div>
+            <div class="feat-desc">Premiere Pro / DaVinci Resolve向けプロジェクト構成を自動生成。素材フォルダを読み込んで即整理。</div>
+            <span class="feat-tag">VIDEO EDIT</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">💾</span>
+            <div class="feat-name">ブラウザ内永続記憶</div>
+            <div class="feat-desc">記憶はあなたのブラウザに保存される。クラウドに個人データを送らない、プライバシー設計。</div>
+            <span class="feat-tag">LOCAL STORAGE</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🖼️</span>
+            <div class="feat-name">マルチモーダル学習で成長が加速する</div>
+            <div class="feat-desc">言葉だけでなく、画像・音声・動画を一緒に見せながら教えると学習速度と精度が大幅に上がる。「これが犬だよ」と画像を見せれば、視覚・言語・因果推論が同時に育つ。テキストだけの何倍もの速さで概念が定着する。</div>
+            <span class="feat-tag">MULTIMODAL · ACCELERATED LEARNING</span>
+        </div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+    <p class="sec-label reveal">HOW IT WORKS</p>
+    <h2 class="sec-title reveal">使い方は<em>シンプル。</em></h2>
+    <div class="how-grid">
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">7日間無料で登録</div>
+            <div class="how-desc">PayPalで簡単に登録。最初の7日間は無料、その後¥980/月。いつでも解約可能。</div>
+        </div>
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">ブラウザで即起動</div>
+            <div class="how-desc">インストール不要。ブラウザを開くだけでAoが起動する。</div>
+        </div>
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">話しかける</div>
+            <div class="how-desc">日本語でそのまま話しかけるだけ。Aoが応答し、成長する。</div>
+        </div>
+        <div class="how-item reveal">
+            <div class="how-num"></div>
+            <div class="how-title">記憶が積み重なる</div>
+            <div class="how-desc">使えば使うほど、Aoはあなたのことを学習し、会話が深くなる。</div>
+        </div>
+    </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing-wrap" id="pricing">
+    <div class="pricing-card reveal">
+        <div class="badge">✦ スタンダードプラン</div>
+        <div style="margin-top:2rem;margin-bottom:0.5rem;">
+            <span style="display:inline-block;background:linear-gradient(90deg,rgba(251,191,36,0.15),rgba(251,191,36,0.05));border:1px solid rgba(251,191,36,0.4);border-radius:0.5rem;padding:0.4rem 1.2rem;font-size:0.8rem;font-weight:700;color:#fbbf24;letter-spacing:0.05em;">
+                🎁 最初の7日間は無料
+            </span>
+        </div>
+        <div class="price"><sup>¥</sup>980<sub>/月</sub></div>
+        <div class="price-note">7日間無料 → 以降¥980/月 · PayPal自動更新 · いつでも解約可能</div>
+        <ul class="price-list">
+            <li>Ao v26.5.0 フルアクセス</li>
+            <li>感情・世界モデル・自律思考 全機能</li>
+            <li>動画プロジェクト支援</li>
+            <li>ゼロ学習型言語習得エンジン</li>
+            <li>ブラウザ内永続記憶（プライバシー保護）</li>
+            <li>バージョンアップ時も継続利用可能</li>
+        </ul>
+
+        <!-- PayPalサブスクボタン -->
+        <div class="paypal-area">
+            <div class="paypal-area-label">SECURE PAYMENT VIA PAYPAL</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);margin-bottom:1.25rem;">
+                最初の7日間は無料。その後¥980/月で自動更新。
+            </div>
+            <a href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-3MT36199SM738773GNHGPVFI"
+               target="_blank"
+               style="display:block;width:100%;padding:1rem;background:linear-gradient(135deg,#009cde,#012169);color:#fff;border:none;border-radius:0.65rem;font-size:1rem;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 4px 20px rgba(0,156,222,0.35);transition:opacity 0.2s,transform 0.2s;"
+               onmouseover="this.style.opacity='0.88';this.style.transform='translateY(-2px)'"
+               onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
+                <span style="margin-right:0.5rem;">𝐏</span> PayPalで無料トライアルを開始
+            </a>
+            <div style="margin-top:0.85rem;font-size:0.7rem;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;">
+                SSL SECURED · CANCEL ANYTIME
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- SPECS -->
+<div class="section" id="specs">
+    <p class="sec-label reveal">SYSTEM REQUIREMENTS</p>
+    <h2 class="sec-title reveal">動作<em>環境。</em></h2>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem;max-width:1100px;margin:0 auto;">
+
+        <!-- PC 最低スペック -->
+        <div class="feat-card reveal" style="border-color:rgba(255,255,255,0.1);">
+            <span class="feat-icon">💻</span>
+            <div class="feat-name" style="color:rgba(255,255,255,0.5);">PC — 最低スペック</div>
+            <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">OS</span>
+                    <span style="color:rgba(255,255,255,0.7);">Windows 10 / macOS 11 / Linux</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">ブラウザ</span>
+                    <span style="color:rgba(255,255,255,0.7);">Chrome / Edge 最新版</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">CPU</span>
+                    <span style="color:rgba(255,255,255,0.7);">2コア 1.8GHz以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">RAM</span>
+                    <span style="color:rgba(255,255,255,0.7);">2GB以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">GPU</span>
+                    <span style="color:rgba(255,255,255,0.7);">統合GPU（Intel UHD等）WebGL2対応</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;">
+                    <span style="color:rgba(255,255,255,0.35);">空き容量</span>
+                    <span style="color:rgba(255,255,255,0.7);">500MB以上</span>
+                </div>
+            </div>
+            <span class="feat-tag" style="margin-top:1.25rem;">起動・基本会話が可能</span>
+        </div>
+
+        <!-- PC 推奨スペック -->
+        <div class="feat-card reveal" style="border-color:rgba(192,132,252,0.4);">
+            <span class="feat-icon">🖥️</span>
+            <div class="feat-name">PC — 推奨スペック</div>
+            <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">OS</span>
+                    <span style="color:rgba(255,255,255,0.7);">Windows 11 / macOS 13以降</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">ブラウザ</span>
+                    <span style="color:rgba(255,255,255,0.7);">Chrome 最新版</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">CPU</span>
+                    <span style="color:rgba(255,255,255,0.7);">4コア 2.5GHz以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">RAM</span>
+                    <span style="color:rgba(255,255,255,0.7);">4GB以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">GPU</span>
+                    <span style="color:rgba(255,255,255,0.7);">独立GPU VRAM 1GB以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;">
+                    <span style="color:rgba(255,255,255,0.35);">空き容量</span>
+                    <span style="color:rgba(255,255,255,0.7);">500MB以上</span>
+                </div>
+            </div>
+            <span class="feat-tag">学習加速・マルチモーダル対応</span>
+        </div>
+
+        <!-- スマホ 最低スペック -->
+        <div class="feat-card reveal" style="border-color:rgba(255,255,255,0.1);">
+            <span class="feat-icon">📱</span>
+            <div class="feat-name" style="color:rgba(255,255,255,0.5);">スマートフォン — 最低スペック</div>
+            <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">OS</span>
+                    <span style="color:rgba(255,255,255,0.7);">Android 10 / iOS 15以降</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">ブラウザ</span>
+                    <span style="color:rgba(255,255,255,0.7);">Chrome / Safari 最新版</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">RAM</span>
+                    <span style="color:rgba(255,255,255,0.7);">3GB以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;">
+                    <span style="color:rgba(255,255,255,0.35);">注意</span>
+                    <span style="color:rgba(255,255,255,0.5);font-size:0.75rem;">iOSはWebGL2制限あり<br>GPU加速がCPU動作になる場合あり</span>
+                </div>
+            </div>
+            <span class="feat-tag" style="margin-top:1.25rem;">基本会話・テキスト学習が可能</span>
+        </div>
+
+        <!-- スマホ 推奨スペック -->
+        <div class="feat-card reveal" style="border-color:rgba(192,132,252,0.4);">
+            <span class="feat-icon">📲</span>
+            <div class="feat-name">スマートフォン — 推奨スペック</div>
+            <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">OS</span>
+                    <span style="color:rgba(255,255,255,0.7);">Android 13 / iOS 17以降</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">ブラウザ</span>
+                    <span style="color:rgba(255,255,255,0.7);">Chrome 最新版</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
+                    <span style="color:rgba(255,255,255,0.35);">RAM</span>
+                    <span style="color:rgba(255,255,255,0.7);">6GB以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;">
+                    <span style="color:rgba(255,255,255,0.35);">推奨端末</span>
+                    <span style="color:rgba(255,255,255,0.7);">Pixel 7以降 / iPhone 14以降</span>
+                </div>
+            </div>
+            <span class="feat-tag">画像・音声学習も快適に動作</span>
+        </div>
+
+    </div>
+
+    <!-- 補足注記 -->
+    <div style="max-width:700px;margin:3rem auto 0;padding:1.5rem;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:1rem;font-size:0.78rem;color:rgba(255,255,255,0.3);line-height:2;">
+        <span style="color:var(--p);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;">NOTE</span><br><br>
+        WebGL2非対応環境でもCPUフォールバックで動作しますが、画像・動画処理が遅くなります。<br>
+        学習データはブラウザのIndexedDBに保存されます（起動時〜1MB・半年学習後〜100MB程度）。<br>
+    </div>
+</div>
+
+
+<!-- GROWTH STAGES -->
+<div class="section" id="growth">
+    <p class="sec-label reveal">GROWTH STAGES</p>
+    <h2 class="sec-title reveal">Aoが<em>育っていく</em>段階。</h2>
+    <p style="text-align:center;color:rgba(255,255,255,0.4);margin-bottom:3rem;" class="reveal">
+        最初からすごいAIではありません。あなたが教えるほど、本当に変わっていきます。
+    </p>
+
+    <div style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;">
+
+        <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
+            <div style="font-size:2rem;min-width:3rem;text-align:center;">🥚</div>
+            <div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 1 / 起動直後</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">ランダムテンプレート期</div>
+                <div class="feat-desc">内部の学習データがゼロの状態。テンプレートをランダムに返します。これは欠陥ではなく、ゼロから学習するAISの正常な初期状態です。同じ質問でも毎回違う返し方をするのはこの段階の特徴です。</div>
+            </div>
+        </div>
+
+        <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
+            <div style="font-size:2rem;min-width:3rem;text-align:center;">🐣</div>
+            <div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 2 / エピソード3件以上蓄積</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">記憶整理・パターン認識期</div>
+                <div class="feat-desc">会話が3回以上になると自律的なリプレイ（記憶の整理）が動き始めます。観測回数が2回以上になったテンプレートが優先されるようになり、文脈に合った応答が出始めます。</div>
+            </div>
+        </div>
+
+        <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
+            <div style="font-size:2rem;min-width:3rem;text-align:center;">🐥</div>
+            <div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 3 / 語彙50種類以上・統計信用値25%超え</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">語彙成熟・テンプレート卒業期</div>
+                <div class="feat-desc">語彙が50種類を超え、統計的信用値が25%を超えると、テンプレートではなく学習した言語パターンで文を組み立て始めます。接続詞・助詞・文末を統計から選んで自分の言葉で話し始める段階です。</div>
+            </div>
+        </div>
+
+        <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
+            <div style="font-size:2rem;min-width:3rem;text-align:center;">🦅</div>
+            <div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 4 / 概念信頼度0.68超え</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">概念定義・因果推論期</div>
+                <div class="feat-desc">「犬はイヌ科だ」と教えた概念が信頼度0.68を超えると定義済み概念として記憶されます。「狼も鼻が利くはず」のような因果推論が自律的に動き始め、教えた概念同士を自分で繋げるようになります。学習が学習を加速する段階です。</div>
+            </div>
+        </div>
+
+        <div class="feat-card reveal" style="display:flex;gap:1.5rem;align-items:flex-start;">
+            <div style="font-size:2rem;min-width:3rem;text-align:center;">🌟</div>
+            <div>
+                <div style="font-size:0.65rem;letter-spacing:0.2em;color:var(--p);font-family:'Space Mono',monospace;margin-bottom:0.5rem;">STAGE 5 / 継続的な成長</div>
+                <div class="feat-name" style="font-size:1rem;margin-bottom:0.5rem;">抽象化・自律推論期</div>
+                <div class="feat-desc">概念グラフが育つほど、新しい概念を一回で覚えられるようになります。嘘を教えると既存の高信頼度概念と矛盾を検出して受け入れなくなります。画像・音声・動画と一緒に教えると、この段階への到達が大幅に速まります。</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="max-width:700px;margin:3rem auto 0;padding:1.5rem;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:1rem;font-size:0.82rem;color:rgba(255,255,255,0.4);text-align:center;line-height:2;">
+        画像・音声・動画を一緒に教えると各段階の速度が大幅に上がります。
+    </div>
+</div>
+
+<!-- FAQ -->
+<div class="section-full">
+    <div style="max-width:1200px;margin:0 auto;padding:0 0 2rem;">
+        <p class="sec-label reveal" style="text-align:center;">FAQ</p>
+        <h2 class="sec-title reveal" style="text-align:center;margin-bottom:4rem;">よくある<em>質問。</em></h2>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item reveal">
+            <div class="faq-q">インターネット接続は必要ですか？</div>
+            <div class="faq-a">アクセスのたびにインターネット接続が必要です。ただし学習データはブラウザ内（IndexedDB）に保存されるため、Aoが覚えた内容はオフラインでも消えません。次回接続時にそのまま続きから使えます。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">スマートフォンでも使えますか？</div>
+            <div class="faq-a">PCブラウザに加え、スマートフォン・タブレットでもご利用いただけます。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">記憶はどこに保存されますか？</div>
+            <div class="faq-a">あなたのブラウザ（localStorage）に保存されます。外部サーバーには一切送信されません。ただし、ブラウザのキャッシュを削除すると記憶はリセットされます。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">解約はいつでもできますか？</div>
+            <div class="faq-a">PayPalの管理画面からいつでも即時解約可能です。日割り返金はありませんが、解約月末まで利用できます。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">別のブラウザやPCで使えますか？</div>
+            <div class="faq-a">アクセスはどの端末からも可能ですが、記憶はブラウザごとに別々に保存されます。端末をまたいで記憶を共有する機能は今後の対応予定です。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">動画編集ソフトは必要ですか？</div>
+            <div class="faq-a">動画プロジェクト支援機能を使う場合はAdobe Premiere ProまたはDaVinci Resolveが必要です。それ以外の機能は単独で動作します。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">画像や動画・音声を見せると何が変わりますか？</div>
+            <div class="faq-a">言葉だけで教えるより、はるかに速く深く学習します。たとえば「これが犬だよ」とテキストだけで教えるより、犬の画像を一緒に見せると、視覚パターン・言語・因果推論が同時に結びつきます。正面・横顔・後ろ姿の3枚を見せれば、見たことのない角度の犬も認識・生成できるようになります。音声も同様で、言葉の感情や意図をより正確に理解するようになります。マルチモーダルで教えるほど、Aoの成長速度と理解の精度が上がります。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">日本語の処理はどうやっているのですか？</div>
+            <div class="faq-a">形態素解析器（辞書ベースのツール）には頼っていません。共起・予測誤差・エントロピー境界検出を組み合わせた独自の言語習得エンジンで自然言語を理解します。日本語に限らず、あなたが話しかける言語をそのまま学習します。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">最初から賢いですか？</div>
+            <div class="faq-a">最初は基本的なテンプレート応答をします。これは欠陥ではなく、ゼロから学習するAISとしての正常な状態です。会話を重ねて教えていくほど、あなただけのAoに育っていきます。最初の変化は数日〜1週間で感じられます。</div>
+        </div>
+        <div class="faq-item reveal">
+            <div class="faq-q">AISとは何ですか？</div>
+            <div class="faq-a">
+                AISとは <strong style="color:rgba(255,255,255,0.85);">Artificial Intellect Sapiens</strong>（人工知性人）の略です。<br><br>
+                一般的なAI（人工知能）が「答えを出す道具」であるのに対し、AISは<em style="font-style:normal;color:var(--p);">人間と同じように学習し、推論し、概念を育てていく知性</em>を指します。<br><br>
+                Sapiensという言葉はホモ・サピエンス（知恵ある人）に由来します。つまりAISは「知恵を持つ人工知性」という意味です。あらかじめ答えを持つのではなく、教えられたことを理解し、因果関係を推論し、抽象概念を形成しながら成長する。その構造が人間の知性と本質的に同じであることから、この名称を使っています。<br><br>
+                AoはAISとして設計されています。使うたびに育ち、あなたと共に成長する知性です。
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+    <h2 class="reveal">Aoと、<em style="font-style:normal;background:linear-gradient(90deg,var(--p),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">話してみる。</em></h2>
+    <p class="reveal">7日間無料 → その後¥980/月。いつでも解約できる。</p>
+    <a href="#pricing" class="btn-main reveal">今すぐはじめる</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="logo">Ao</div>
+    <p>© 2025 Ao Project · v26.5.0 · すべての記憶はあなたのブラウザに</p>
+</footer>
+
+<script>
+    // スクロールリビール
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
