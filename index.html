@@ -467,20 +467,20 @@
 <!-- STATS -->
 <div class="stats">
     <div class="stat">
-        <div class="stat-n">10,000</div>
-        <div class="stat-l">エピソード記憶</div>
+        <div class="stat-n">50,000</div>
+        <div class="stat-l">概念記憶容量 (SoA)</div>
     </div>
     <div class="stat">
-        <div class="stat-n">12,000</div>
-        <div class="stat-l">概念ノード</div>
+        <div class="stat-n">64×64</div>
+        <div class="stat-l">幾何透視空間野</div>
     </div>
     <div class="stat">
-        <div class="stat-n">20,000</div>
-        <div class="stat-l">因果リンク</div>
+        <div class="stat-n">2,368</div>
+        <div class="stat-l">多次元層分断特徴量</div>
     </div>
     <div class="stat">
-        <div class="stat-n">∞</div>
-        <div class="stat-l">会話ターン数</div>
+        <div class="stat-n">100MB~</div>
+        <div class="stat-l">常時メモリ (Core i3 OK)</div>
     </div>
 </div>
 
@@ -506,6 +506,24 @@
     <h2 class="sec-title reveal">Aoにしか<br>できないこと<em>。</em></h2>
     <div class="feat-grid">
         <div class="feat-card reveal">
+            <span class="feat-icon">📐</span>
+            <div class="feat-name">幾何空間 ＆ 中心点（消失点）自動検出</div>
+            <div class="feat-desc">明暗と境界エッジから画面の中心点（消失点）を自動特定。放射幾何透視線を引いて遠近法を適用し、立体空間野として一括学習。</div>
+            <span class="feat-tag">PERSPECTIVE · GEOMETRY</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">🎨</span>
+            <div class="feat-name">Gabor / LBP リアル質感デコーダー</div>
+            <div class="feat-desc">Gabor周波数（毛並みの流れる角度・密度）とLBP（表面のキメ）を直接解凍合成。ノイズに頼らない本物の質感表現。</div>
+            <span class="feat-tag">GABOR · LBP TEXTURE</span>
+        </div>
+        <div class="feat-card reveal">
+            <span class="feat-icon">⚡</span>
+            <div class="feat-name">Core i3 / 8GBメモリ 超軽量・爆速設計</div>
+            <div class="feat-desc">TypedArray SoA（共有バッファ）とHot/Cold階層化（IndexedDB退避）により、メモリ消費を常時100MB台に削減。低スペック機でもサクサク動作。</div>
+            <span class="feat-tag">SOA MEMORY · Core i3 OK</span>
+        </div>
+        <div class="feat-card reveal">
             <span class="feat-icon">🧠</span>
             <div class="feat-name">感情・内部状態モデル</div>
             <div class="feat-desc">喜び・緊張・好奇心・集中度など複数の感情軸をリアルタイム更新。会話の流れでAoの内面が変化する。</div>
@@ -518,33 +536,9 @@
             <span class="feat-tag">WORLD MODEL</span>
         </div>
         <div class="feat-card reveal">
-            <span class="feat-icon">🔄</span>
-            <div class="feat-name">自律思考ループ</div>
-            <div class="feat-desc">あなたが話しかけていない間も、Aoは内部で思考し続ける。好奇心・衝動・恒常性が絡み合う連続プロセス。</div>
-            <span class="feat-tag">AUTONOMOUS</span>
-        </div>
-        <div class="feat-card reveal">
-            <span class="feat-icon">🎌</span>
-            <div class="feat-name">言語を、一緒に覚える</div>
-            <div class="feat-desc">Aoはあらかじめ日本語を「知らない」。あなたとの会話を通じて、語順・助詞・言葉の使われ方を統計的に学習していく。</div>
-            <span class="feat-tag">SELF-SUPERVISED · NLP</span>
-        </div>
-        <div class="feat-card reveal">
-            <span class="feat-icon">🎬</span>
-            <div class="feat-name">動画プロジェクト支援</div>
-            <div class="feat-desc">Premiere Pro / DaVinci Resolve向けプロジェクト構成を自動生成。素材フォルダを読み込んで即整理。</div>
-            <span class="feat-tag">VIDEO EDIT</span>
-        </div>
-        <div class="feat-card reveal">
-            <span class="feat-icon">💾</span>
-            <div class="feat-name">ブラウザ内永続記憶</div>
-            <div class="feat-desc">記憶はあなたのブラウザに保存される。クラウドに個人データを送らない、プライバシー設計。</div>
-            <span class="feat-tag">LOCAL STORAGE</span>
-        </div>
-        <div class="feat-card reveal">
             <span class="feat-icon">🖼️</span>
             <div class="feat-name">マルチモーダル学習で成長が加速する</div>
-            <div class="feat-desc">言葉だけでなく、画像・音声・動画を一緒に見せながら教えると学習速度と精度が大幅に上がる。「これが犬だよ」と画像を見せれば、視覚・言語・因果推論が同時に育つ。テキストだけの何倍もの速さで概念が定着する。</div>
+            <div class="feat-desc">言葉だけでなく、画像・音声・動画を一緒に見せながら教えると学習速度と精度が大幅に上がる。視覚・言語・因果推論が同時に育つ。</div>
             <span class="feat-tag">MULTIMODAL · ACCELERATED LEARNING</span>
         </div>
     </div>
@@ -694,11 +688,11 @@
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
                     <span style="color:rgba(255,255,255,0.35);">CPU</span>
-                    <span style="color:rgba(255,255,255,0.7);">2コア 1.8GHz以上</span>
+                    <span style="color:rgba(255,255,255,0.7);">第11世代 Core i3 / 2コア 1.8GHz以上</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
                     <span style="color:rgba(255,255,255,0.35);">RAM</span>
-                    <span style="color:rgba(255,255,255,0.7);">2GB以上</span>
+                    <span style="color:rgba(255,255,255,0.7);">4GB〜8GB（TypedArray SoA最適化）</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:0.82rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border);">
                     <span style="color:rgba(255,255,255,0.35);">GPU</span>
@@ -709,7 +703,7 @@
                     <span style="color:rgba(255,255,255,0.7);">500MB以上</span>
                 </div>
             </div>
-            <span class="feat-tag" style="margin-top:1.25rem;">起動・基本会話が可能</span>
+            <span class="feat-tag" style="margin-top:1.25rem;">常時メモリ100MB台でサクサク起動</span>
         </div>
 
         <!-- PC 推奨スペック -->
